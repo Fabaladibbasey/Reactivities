@@ -1,41 +1,52 @@
-import React from 'react'
-import { Grid, GridColumn, List, ListItem } from 'semantic-ui-react'
-import { Activity } from '../../../app/models/activity';
+import { observer } from 'mobx-react-lite';
+import { Grid} from 'semantic-ui-react'
+import { useStore } from '../../../app/api/stores/store';
 import ActivityDetails from '../details/ActivityDetails';
 import ActivityForm from '../form/ActivityForm';
 import ActivityList from './ActivityList';
 
-interface Props {
-    activities: Activity[];
-    activity: Activity | undefined;
-    onHandleSelectedActivity: (id: string) => void;
-    onHandleCancelActivity: () => void;
-    openForm: boolean;
-    onHandleOpenForm: (id: string) => void;
-    onHandleCloseForm: () => void;
-    onHandleUpsertActivity: (activity: Activity) => void;
-    onHandleDeleteActivity: (id: string) => void;
-}
+// interface Props {
+//     activities: Activity[];
+//     activity: Activity | undefined;
+//     onHandleSelectedActivity: (id: string) => void;
+//     onHandleCancelActivity: () => void;
+//     openForm: boolean;
+//     onHandleOpenForm: (id: string) => void;
+//     onHandleCloseForm: () => void;
+//     onHandleUpsertActivity: (activity: Activity) => void;
+//     onHandleDeleteActivity: (id: string) => void;
+//     onIsSubmitting: boolean;
+// }
 
-export default function ActivityDashboard({activities, activity, onHandleSelectedActivity, onHandleCancelActivity, openForm, onHandleOpenForm, onHandleCloseForm, onHandleUpsertActivity, onHandleDeleteActivity} : Props) {
+export default observer( function ActivityDashboard() {
+    const {activityStore} = useStore();
+    const {displayForm, selectedActivity: activity} = activityStore;
     return (
         <Grid>
             <Grid.Column width={10}>
                 <ActivityList 
-                    activities={activities}
-                    onHandleSelectedActivity={onHandleSelectedActivity}
-                    onHandleDeleteActivity={onHandleDeleteActivity}
+                    // activities={activities}
+                    // onHandleSelectedActivity={onHandleSelectedActivity}
+                    // onHandleDeleteActivity={onHandleDeleteActivity}
+                    // onIsSubmitting={onIsSubmitting}
                     />
             </Grid.Column>  
             <Grid.Column width={6}>
                 {activity && <ActivityDetails 
-                    activity={activity} 
-                    onHandleCancelActivity={onHandleCancelActivity}
-                    onHandleOpenForm={onHandleOpenForm}
+                    // activity={activity} 
+                    // onHandleCancelActivity={onHandleCancelActivity}
+                    // onHandleOpenForm={onHandleOpenForm}
                     />
                 }
-                {openForm && <ActivityForm onHandleCloseForm={onHandleCloseForm} selectedActivity={activity} onHandleUpsertActivity={onHandleUpsertActivity}/>}
+                {displayForm && 
+                <ActivityForm 
+                    // onHandleCloseForm={onHandleCloseForm} 
+                    // selectedActivity={activity} 
+                    // onHandleUpsertActivity={onHandleUpsertActivity}
+                    // onIsSubmitting={onIsSubmitting}
+                    />
+                    }
             </Grid.Column>         
         </Grid>
     )
-}
+})

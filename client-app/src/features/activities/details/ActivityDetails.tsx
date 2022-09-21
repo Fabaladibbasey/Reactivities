@@ -1,14 +1,14 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react'
 import { Button, ButtonGroup, Card, Container } from 'semantic-ui-react'
-import { Activity } from '../../../app/models/activity';
+import { useStore } from '../../../app/api/stores/store';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
 
-interface Props {
-    activity: Activity;
-    onHandleCancelActivity: () => void;
-    onHandleOpenForm: (id: string) => void;
-}
 
-export default function ActivityDetails({activity, onHandleCancelActivity, onHandleOpenForm} : Props) {
+export default observer( function ActivityDetails() {
+    const {activityStore} = useStore();
+    const {selectedActivity: activity, openForm, cancelSelectedActivity} = activityStore;
+    if(!activity) return <LoadingComponent content='Activity loading...' />
   return (
     <Card fluid>
         <Container>
@@ -25,11 +25,10 @@ export default function ActivityDetails({activity, onHandleCancelActivity, onHan
             </Card.Content>
         <Card.Content extra>
             <ButtonGroup widths={2}>
-                <Button basic color='blue' content='Edit' onClick={() => onHandleOpenForm(activity.id)}/>
-                <Button basic color='grey' content='Cancel' onClick={onHandleCancelActivity}/>
+                <Button basic color='blue' content='Edit' onClick={() => openForm(activity.id)}/>
+                <Button basic color='grey' content='Cancel' onClick={cancelSelectedActivity}/>
             </ButtonGroup>
         </Card.Content>
   </Card>
   )
-}
-
+})
