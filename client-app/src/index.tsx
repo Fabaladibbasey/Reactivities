@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './app/index.css';
-// import 'semantic-ui-css/semantic.min.css'
+import 'semantic-ui-css/semantic.min.css';
+import 'react-calendar/dist/Calendar.css';
 import App from './app/App';
 import reportWebVitals from './reportWebVitals';
 import { store, StoreContext } from './app/api/stores/store';
@@ -12,11 +13,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // <React.StrictMode>
-    <StoreContext.Provider value={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </StoreContext.Provider>
+  <StoreContext.Provider value={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StoreContext.Provider>
   // </React.StrictMode>
 );
 
