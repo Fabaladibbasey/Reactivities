@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './app/index.css';
 import 'semantic-ui-css/semantic.min.css';
 import 'react-calendar/dist/Calendar.css';
+import 'react-toastify/dist/ReactToastify.css';
 import App from './app/App';
 import reportWebVitals from './reportWebVitals';
 import { store, StoreContext } from './app/api/stores/store';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+
+export const history = createBrowserHistory();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,9 +18,9 @@ const root = ReactDOM.createRoot(
 root.render(
   // <React.StrictMode>
   <StoreContext.Provider value={store}>
-    <BrowserRouter>
+    <Router history={history}>
       <App />
-    </BrowserRouter>
+    </Router>
   </StoreContext.Provider>
   // </React.StrictMode>
 );
@@ -25,3 +29,5 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+
