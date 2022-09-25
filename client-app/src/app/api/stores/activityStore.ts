@@ -24,7 +24,8 @@ export default class ActivityStore{
                 // })]
 
                 activities.forEach(activity => {
-                   this.activityRegistry.set(activity.id, {...activity, date: activity.date.split('T')[0]});
+
+                   this.activityRegistry.set(activity.id, {...activity, date: new Date(activity.date!)});
                 })
             })
             
@@ -71,14 +72,17 @@ export default class ActivityStore{
         this.isLoading = isLoading;
     }
     
+    // setActivity = (activity: Activity) => {
+    //     activity.date = new Date(activity.date!);
+    //     this.activityRegistry.set(activity.id, activity);
+    // }
+
     createActivity = async (activity: Activity) => {
-        console.log('createActivity', activity);
         
         this.setLoading(true);
         try{
             await agent.Activities.create(activity);
             runInAction(() => {
-                // this.activities.push(activity);
                 this.activityRegistry.set(activity.id, activity);
                 this.selectedActivity = activity;
                 this.displayForm = false;
@@ -134,7 +138,7 @@ export default class ActivityStore{
     }
 
     get activitiesByDate(){
-        return Array.from(this.activityRegistry.values()).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+        return Array.from(this.activityRegistry.values()).sort((a, b) => a.date!.getTime() - b.date!.getTime());
     }
 
     get groupedActivities(){
@@ -146,7 +150,7 @@ export default class ActivityStore{
         //     }, {} as {[key: string]: Activity[]})
         // )
         let result = this.activitiesByDate.reduce((activities, activity) => {
-            const date = activity.date;
+            const date = activity.date!.toISOString().split('T')[0]!;
             activities[date] = activities[date] || [];
             activities[date].push(activity);
             return activities;
