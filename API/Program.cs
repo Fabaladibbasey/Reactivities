@@ -1,20 +1,40 @@
-using API;
+using API.Extensions;
 using API.MiddleWare;
 using Application.Activities;
-using FluentValidation.AspNetCore;
+using Domain;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddFluentValidation(cfg =>
+builder.Services.AddControllers(opt =>
 {
-    cfg.RegisterValidatorsFromAssemblyContaining<Create>();
-});
-builder.AddApplicationServices();
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new AuthorizeFilter(policy));
 
-Seed.SeedData(builder.Services.BuildServiceProvider().GetService<DataContext>());
+});
+
+// .AddFluentValidation(cfg =>
+// {
+//     cfg.RegisterValidatorsFromAssemblyContaining<Create>();
+// });
+
+builder.Services.AddScoped<IValidator<Activity>, ActivityValidator>();
+
+builder.AddApplicationServices();
+builder.AddIdentityServices();
+var appContext = builder.Services.BuildServiceProvider().GetRequiredService<DataContext>();
+var userManager = builder.Services.BuildServiceProvider().GetRequiredService<UserManager<AppUser>>();
+await appContext.Database.MigrateAsync();
+await Seed.SeedData(appContext, userManager);
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +47,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
