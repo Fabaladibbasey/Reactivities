@@ -1,4 +1,3 @@
-using API.Services;
 using Application.Activities;
 using Application.Core;
 using MediatR;

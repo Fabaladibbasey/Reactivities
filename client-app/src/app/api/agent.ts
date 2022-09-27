@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { history } from "../..";
 import { Activity } from "../models/activity";
+import { User, UserFormValues } from "../models/user";
 import { store } from "./stores/store";
 
 axios.defaults.baseURL = "https://localhost:7126/api";
@@ -13,6 +14,14 @@ const sleep = (delay: number) => {
 };
 
 const responseBody = <T> (response: AxiosResponse<T>) => response.data;
+
+axios.interceptors.request.use(async config => {
+    await sleep(1000);
+    const token = store.commonStore.token;
+    if(token) config.headers!.Authorization = `Bearer ${token}`;
+    return config;
+});
+
 
 axios.interceptors.response.use(async response => {
         await sleep(1100);
@@ -70,8 +79,15 @@ const Activities = {
     delete: (id: string) => requests.del<void>(`/activities/${id}`),
 };
 
+const Account = {
+    current: () => requests.get<User>("/account"),
+    login: (user: UserFormValues) => requests.post<User>("/account/login", user),
+    register: (user: UserFormValues) => requests.post<User>("/account/register", user),
+
+}
 const agent = {
-    Activities
+    Activities,
+    Account
 };
 
 export default agent;
