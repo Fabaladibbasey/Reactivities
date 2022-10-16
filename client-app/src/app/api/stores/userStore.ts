@@ -4,10 +4,10 @@ import { User, UserFormValues } from "../../models/user";
 import agent from "../agent";
 import { store } from "./store";
 
-export default class UserStore{
+export default class UserStore {
     user: User | null = null;
-    
-    constructor(){
+
+    constructor() {
         makeAutoObservable(this);
     }
 
@@ -19,11 +19,11 @@ export default class UserStore{
         try {
             const user = await agent.Account.login(creds);
             store.commonStore.setToken(user.token);
-            
+
             runInAction(() => {
                 this.user = user;
             })
-            
+
             history.push('/activities');
             store.modalStore.closeModal();
         } catch (error) {
@@ -52,15 +52,19 @@ export default class UserStore{
         try {
             const user = await agent.Account.register(creds);
             store.commonStore.setToken(user.token);
-            
+
             runInAction(() => {
                 this.user = user;
             })
-            
+
             history.push('/activities');
             store.modalStore.closeModal();
         } catch (error) {
             throw error;
         }
+    }
+
+    setImage = (image: string) => {
+        if (this.user) this.user.image = image;
     }
 }

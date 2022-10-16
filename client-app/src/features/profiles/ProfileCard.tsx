@@ -19,7 +19,7 @@ function ProfileCard({ Profile }: Props) {
                 </Card.Meta>
             </Card.Content>
             <Card.Content extra>
-                <Button as={Link} to={`/profile/${Profile.userName}`} basic color='blue' content='View Profile' />
+                <Button as={Link} to={`/profiles/${Profile.userName}`} basic color='blue' content='View Profile' />
                 <Icon name='user' />
                 20 followers
             </Card.Content>
