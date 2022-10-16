@@ -94,5 +94,24 @@ namespace API.Controllers
             };
         }
 
+
+        //One easiest way, but I'm not using it
+        [Authorize]
+        [HttpPut]
+        public async Task<ActionResult> EditUser(EditDto editDto)
+        {
+            var user = await _userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
+            if (user == null) return NotFound();
+
+            user.DisplayName = editDto.DisplayName;
+            user.Bio = editDto.Bio;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded) return NoContent();
+
+            return BadRequest("Problem updating user");
+        }
+
     }
 }

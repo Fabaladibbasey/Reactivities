@@ -15,7 +15,11 @@ function ProfileCard({ Profile }: Props) {
             <Card.Content>
                 <Card.Header>{Profile.displayName}</Card.Header>
                 <Card.Meta>
-                    <span>{Profile.bio}</span>
+                    <span>
+                        {
+                            (Profile.bio && Profile.bio.length > 30) ? Profile.bio.substring(0, 30) : Profile.bio}
+                        ...
+                    </span>
                 </Card.Meta>
             </Card.Content>
             <Card.Content extra>

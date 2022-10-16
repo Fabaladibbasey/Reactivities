@@ -3,11 +3,13 @@ using API.MiddleWare;
 using Application.Activities;
 using Domain;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using static Application.Profiles.Edit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,14 +20,12 @@ builder.Services.AddControllers(opt =>
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     opt.Filters.Add(new AuthorizeFilter(policy));
 
+})
+.AddFluentValidation(config =>
+{
+    config.RegisterValidatorsFromAssemblyContaining<Create>();
 });
 
-// .AddFluentValidation(cfg =>
-// {
-//     cfg.RegisterValidatorsFromAssemblyContaining<Create>();
-// });
-
-builder.Services.AddScoped<IValidator<Activity>, ActivityValidator>();
 
 builder.AddApplicationServices();
 builder.AddIdentityServices();

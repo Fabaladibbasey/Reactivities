@@ -12,11 +12,11 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Details.Query { UserName = username }));
         }
 
-        // [HttpPut]
-        // public async Task<IActionResult> EditProfile(Edit.Command command)
-        // {
-        //     return HandleResult(await Mediator.Send(command));
-        // }
+        [HttpPut]
+        public async Task<IActionResult> EditProfile(Edit.Command command)
+        {
+            return HandleResult(await Mediator.Send(command));
+        }
 
         // [HttpPost("{username}/follow")]
         // public async Task<IActionResult> Follow(string username)
