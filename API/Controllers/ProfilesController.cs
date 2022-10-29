@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Profiles;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,13 @@ namespace API.Controllers
         // {
         //     return HandleResult(await Mediator.Send(new ListActivities.Query { Username = username, Predicate = predicate }));
         // }
+
+        [HttpGet("{username}/activities")]
+        public async Task<IActionResult> GetUserActivities(string username, string predicate, [FromQuery] PagingParams pagingParams)
+        {
+            return HandlePagedResult(await Mediator.Send(new ListActivities.Query { UserName = username, Predicate = predicate, PagingParams = pagingParams }));
+        }
+
 
     }
 
