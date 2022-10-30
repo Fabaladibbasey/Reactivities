@@ -24,7 +24,7 @@ namespace Persistence
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Server=localhost;Port=49155;Database=ReactivityDb;User Id=postgres;Password=postgrespw");
+                optionsBuilder.UseNpgsql("Server=localhost;Port=49153;Database=ReactivityDb;User Id=postgres;Password=postgrespw");
             }
         }
         protected override void OnModelCreating(ModelBuilder builder)
