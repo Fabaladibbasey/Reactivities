@@ -61,10 +61,12 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    // app.UseHsts(); but not working with heroku
+
     app.Use(async (context, next) =>
     {
         context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000");
-        await next();
+        await next(); // or next.Invoke();
     });
 }
 
