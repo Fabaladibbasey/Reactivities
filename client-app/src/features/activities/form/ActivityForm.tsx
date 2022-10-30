@@ -49,7 +49,6 @@ export default observer(function ActivityForm() {
 
             createActivity(newActivity).then(() => history.push(`/activities/${newActivity.id}`));
         } else {
-
             updateActivity(activity).then(() => history.push(`/activities/${activity.id}`));
         }
     }

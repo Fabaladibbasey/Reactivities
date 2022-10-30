@@ -11,11 +11,11 @@ import TestErrors from '../features/Errors/TestErrors';
 import { ToastContainer } from 'react-toastify';
 import NotFound from '../features/Errors/NotFound';
 import ServerError from '../features/Errors/ServerError';
-import LoginForm from '../features/users/LoginForm';
 import { useStore } from './api/stores/store';
 import LoadingComponent from './layout/LoadingComponent';
 import ModalContainer from './common/modal/ModalContainer';
 import ProfilePage from '../features/profiles/ProfilePage';
+import PrivateRoute from './layout/PrivateRoute';
 function App() {
   const location = useLocation();
   const { userStore, commonStore } = useStore();
@@ -49,14 +49,13 @@ function App() {
           <NavBar />
           <Container style={{ marginTop: '6rem' }}>
             <Switch>
-              <Route exact path='/activities' component={ActivityDashboard} />
-              <Route exact path='/activities/:id' component={ActivityDetails} />
-              <Route exact key={location.key} path={'/createActivity'} component={ActivityForm} />
-              <Route exact path='/createActivity/edit/:id' component={ActivityForm} />
-              <Route exact path='/profiles/:userName' component={ProfilePage} />
-              <Route exact path='/errors' component={TestErrors} />
+              <PrivateRoute exact path='/activities' component={ActivityDashboard} />
+              <PrivateRoute exact path='/activities/:id' component={ActivityDetails} />
+              <PrivateRoute exact key={location.key} path={'/createActivity'} component={ActivityForm} />
+              <PrivateRoute exact path='/createActivity/edit/:id' component={ActivityForm} />
+              <PrivateRoute exact path='/profiles/:userName' component={ProfilePage} />
+              <PrivateRoute exact path='/errors' component={TestErrors} />
               <Route path='/server-error' component={ServerError} />
-              <Route path='/login' component={LoginForm} />
               <Route component={NotFound} />
             </Switch>
           </Container>

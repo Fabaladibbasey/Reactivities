@@ -6,11 +6,27 @@ namespace Persistence
 {
     public class DataContext : IdentityDbContext<AppUser>
     {
+        public DataContext() : base()
+        {
+        }
+
+        static DataContext()
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseNpgsql("Server=localhost;Port=49155;Database=ReactivityDb;User Id=postgres;Password=postgrespw");
+            }
+        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
