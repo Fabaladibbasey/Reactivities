@@ -28,11 +28,55 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId: "1158707271424587",
+          autoLogAppEvents: true,
+          xfbml: true,
+          version: "v15.0",
+        });
+      };
+    </script>
+
+    <script
+      async
+      defer
+      crossorigin="anonymous"
+      src="https://connect.facebook.net/en_US/sdk.js"
+    ></script>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- <script>
+      function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+      }
+      window.onload = function() {
+        console.log("onload");
+        google.accounts.id.initialize({
+          client_id:
+            "657495905393-lb0lcqjjipnugcs75m708q3ee4nvf7bg.apps.googleusercontent.com",
+          callback: handleCredentialResponse,
+        });
+
+        google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed()) {
+            console.log("Prompt was not displayed");
+          } else if (notification.isSkippedMoment()) {
+            console.log("Prompt was skipped");
+          } else if (notification.isDismissedMoment()) {
+            console.log("Prompt was dismissed");
+          }
+        });
+      };
+    </script> -->
+
     <link
-    async
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/semantic-ui@2/dist/semantic.min.css"
-  />
+      async
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/semantic-ui@2/dist/semantic.min.css"
+    />
     <div id="root"></div>
     <!--
       This HTML file is a template.

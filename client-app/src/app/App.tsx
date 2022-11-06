@@ -16,6 +16,7 @@ import LoadingComponent from './layout/LoadingComponent';
 import ModalContainer from './common/modal/ModalContainer';
 import ProfilePage from '../features/profiles/ProfilePage';
 import PrivateRoute from './layout/PrivateRoute';
+declare var google: any;
 function App() {
   const location = useLocation();
   const { userStore, commonStore } = useStore();
@@ -32,10 +33,28 @@ function App() {
       if (commonStore.token) {
         userStore.getUser().finally(() => commonStore.setAppLoaded());
       } else {
-        commonStore.setAppLoaded();
+        userStore.getFacebookLoginStatus().finally(() => commonStore.setAppLoaded());
+
       }
-    },
-    [commonStore, userStore])
+      // window.onload = function () {
+      //   google.accounts.id.initialize({
+      //     client_id: "657495905393-lb0lcqjjipnugcs75m708q3ee4nvf7bg.apps.googleusercontent.com",
+      //     callback: userStore.googleLogin,
+      //   });
+
+      // google.accounts.id.prompt((notification: any) => {
+      //   if (notification.isNotDisplayed()) {
+      //     console.log("Prompt was not displayed");
+      //   } else if (notification.isSkippedMoment()) {
+      //     console.log("Prompt was skipped");
+      //   } else if (notification.isDismissedMoment()) {
+      //     console.log("Prompt was dismissed");
+      //   }
+      // });
+
+      // }
+
+    }, [commonStore, userStore])
 
   if (!commonStore.appLoaded) return <LoadingComponent content='Loading app...' />
   return (

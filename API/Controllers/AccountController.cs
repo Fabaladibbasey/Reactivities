@@ -2,10 +2,12 @@ using System.Security.Claims;
 using API.DTOs;
 using API.Services;
 using Domain;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -17,12 +19,23 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly TokenService _tokenService;
+        private readonly HttpClient _httpClient;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService tokenService)
+        private readonly IConfiguration _config;
+
+        public AccountController(UserManager<AppUser> userManager,
+        SignInManager<AppUser> signInManager, TokenService tokenService,
+        IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _config = config;
+            _httpClient = new HttpClient()
+            {
+                BaseAddress = new System.Uri("https://graph.facebook.com")
+            };
+            // _httpClient.BaseAddress = new Uri(config["ExternalAuthUrl"]);
         }
 
         [HttpPost("login")]
@@ -79,6 +92,95 @@ namespace API.Controllers
         {
             var user = await _userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
             if (user == null) return NotFound();
+            return CreateUserObject(user);
+        }
+
+        [HttpPost("fbLogin")]
+        public async Task<ActionResult<UserDto>> FacebookLogin(string accessToken)
+        {
+            var verifyToken = await _httpClient.GetAsync($"debug_token?input_token={accessToken}&access_token={_config["Facebook:AppId"]}|{_config["Facebook:AppSecret"]}");
+            if (!verifyToken.IsSuccessStatusCode)
+            {
+                return Unauthorized();
+            }
+
+            var result = await _httpClient.GetAsync($"me?fields=id,name,email,picture.width(100).height(100)&access_token={accessToken}");
+            if (!result.IsSuccessStatusCode)
+            {
+                return Unauthorized();
+            }
+
+            var userInfo = await result.Content.ReadAsStringAsync();
+            var fbUser = JsonConvert.DeserializeObject<dynamic>(userInfo);
+
+            var userName = (string)fbUser.id;
+            var user = await _userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.UserName == userName);
+
+            if (user == null)
+            {
+
+                user = new AppUser
+                {
+                    DisplayName = (string)fbUser.name,
+                    Email = (string)fbUser.email,
+                    UserName = (string)fbUser.id,
+                    Photos = new List<Photo>
+                    {
+                        new Photo
+                        {
+                            Id = Guid.NewGuid(),
+                            PublicId = "fb_" + fbUser.id,
+                            Url = (string)fbUser.picture.data.url,
+                            IsMain = true
+                        }
+                    }
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    return BadRequest("Problem creating user");
+                }
+
+            }
+
+            return CreateUserObject(user);
+        }
+
+        //google login
+        [HttpPost("googleLogin")]
+        public async Task<ActionResult<UserDto>> GoogleLogin(string accessToken)
+        {
+            var payload = await GoogleJsonWebSignature.ValidateAsync(accessToken, new GoogleJsonWebSignature.ValidationSettings());
+            var user = await _userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == payload.Email);
+
+            if (user == null)
+            {
+                user = new AppUser
+                {
+                    DisplayName = payload.Name,
+                    Email = payload.Email,
+                    UserName = payload.Email,
+                    Photos = new List<Photo>
+                    {
+                        new Photo
+                        {
+                            Id = Guid.NewGuid(),
+                            PublicId = "google_" + payload.Email,
+                            Url = payload.Picture,
+                            IsMain = true
+                        }
+                    }
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    return BadRequest("Problem creating user");
+                }
+            }
+
+
             return CreateUserObject(user);
         }
 

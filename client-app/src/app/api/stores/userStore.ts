@@ -4,8 +4,16 @@ import { User, UserFormValues } from "../../models/user";
 import agent from "../agent";
 import { store } from "./store";
 
+// declare var google: any;
+
+
 export default class UserStore {
     user: User | null = null;
+    fbAccessToken: string | null = null;
+    fbLoading: boolean = false;
+    googleAccessToken: string | null = null;
+    googleLoading: boolean = false;
+
 
     constructor() {
         makeAutoObservable(this);
@@ -72,4 +80,66 @@ export default class UserStore {
         if (this.user) this.user.displayName = displayName;
     }
 
+    getFacebookLoginStatus = async () => {
+        window.FB.getLoginStatus((response) => {
+            if (response.status === 'connected') {
+                this.fbAccessToken = response.authResponse.accessToken;
+            }
+        });
+    }
+
+    facebookLogin = () => {
+        const apiLogin = async (accessToken: string) => {
+            this.fbLoading = true;
+            try {
+                const user = await agent.Account.fbLogin(accessToken);
+                store.commonStore.setToken(user.token);
+
+                runInAction(() => {
+                    this.user = user;
+                })
+
+                history.push('/activities');
+                store.modalStore.closeModal();
+
+            } catch (error) {
+                throw error;
+            } finally {
+                this.fbLoading = false;
+            }
+        }
+
+        if (this.fbAccessToken) {
+            apiLogin(this.fbAccessToken);
+        } else {
+            window.FB.login((response) => {
+                apiLogin(response.authResponse.accessToken);
+            }, { scope: 'public_profile,email' })
+        }
+    }
+
+    googleLogin = async (response: any) => {
+        this.googleLoading = true;
+        try {
+            const user = await agent.Account.googleLogin(response.credential);
+            console.log(user);
+
+            store.commonStore.setToken(user.token);
+
+            runInAction(() => {
+                this.user = user;
+            })
+
+            history.push('/activities');
+            store.modalStore.closeModal();
+
+        } catch (error) {
+            throw error;
+        } finally {
+            this.googleLoading = false;
+        }
+
+    };
+
 }
+

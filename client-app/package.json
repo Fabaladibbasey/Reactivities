@@ -39,7 +39,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "move build ../API/wwwroot",
+    "postbuild": "rimraf ../API/wwwroot && move build ../API/wwwroot",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -62,8 +62,10 @@
     ]
   },
   "devDependencies": {
+    "@types/facebook-js-sdk": "^3.3.6",
     "@types/react-datepicker": "^4.4.2",
     "@types/react-router-dom": "^5.3.2",
-    "@types/uuid": "^8.3.4"
+    "@types/uuid": "^8.3.4",
+    "rimraf": "^3.0.2"
   }
 }

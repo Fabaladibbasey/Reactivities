@@ -44,14 +44,28 @@ app.UseXContentTypeOptions();
 app.UseReferrerPolicy(opt => opt.NoReferrer());
 app.UseXXssProtection(opt => opt.EnabledWithBlockMode());
 app.UseXfo(opt => opt.Deny());
+
 app.UseCsp(opt => opt
     .BlockAllMixedContent()
-    .StyleSources(s => s.Self().CustomSources("https://fonts.googleapis.com", "https://cdn.jsdelivr.net"))
+    .StyleSources(s => s.Self().CustomSources("https://fonts.googleapis.com", "https://cdn.jsdelivr.net",
+    "sha256-lmto2U1o7YINyHPg9TOCjIt+o5pSFNU/T2oLxDPF+uw=",
+    "sha256-DpOoqibK/BsYhobWHnU38Pyzt5SjDZuR/mFsAiVN7kk=",
+    "https://accounts.google.com/",
+    "sha256-VdJLYZrBOhBJj2L4/+iZupDWpR1sppzSbgJzXdO/Oss="
+    ))
     .FontSources(s => s.Self().CustomSources("https://fonts.gstatic.com", "https://cdn.jsdelivr.net", "data:"))
     .FormActions(s => s.Self())
     .FrameAncestors(s => s.Self())
-    .ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com", "blob:", "data:"))
-    .ScriptSources(s => s.Self().CustomSources("sha256-qgWkIiUZ8sH5O3daGyxJbVYyDRopNx6ICWmw5nTei8M=")));
+    .ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com",
+    "https://www.facebook.com",
+    "https://platform-lookaside.fbsbx.com",
+    "https://lh3.googleusercontent.com",
+     "blob:", "data:"))
+    .ScriptSources(s => s.Self().CustomSources("sha256-qgWkIiUZ8sH5O3daGyxJbVYyDRopNx6ICWmw5nTei8M=",
+    "sha256-ywU5ZDlnzR9r0MIEJ2UaLr3QWAKrpnMi0JVVxc0e33A=",
+    "https://connect.facebook.net/en_US/sdk.js",
+    "https://accounts.google.com/gsi/client",
+    "sha256-dAMs3/Yp2SSUrhzjwbwLmPPB0soj/thHemUrM4u00O8=")));
 
 
 if (app.Environment.IsDevelopment())
