@@ -1,3 +1,4 @@
+import jwtDecode from "jwt-decode";
 import { makeAutoObservable, runInAction } from "mobx";
 import { history } from "../../..";
 import { User, UserFormValues } from "../../models/user";
@@ -13,6 +14,7 @@ export default class UserStore {
     fbLoading: boolean = false;
     googleAccessToken: string | null = null;
     googleLoading: boolean = false;
+    refreshTokenTimeout: any;
 
 
     constructor() {
@@ -27,6 +29,7 @@ export default class UserStore {
         try {
             const user = await agent.Account.login(creds);
             store.commonStore.setToken(user.token);
+            this.refreshTokenTimer(user);
 
             runInAction(() => {
                 this.user = user;
@@ -41,6 +44,7 @@ export default class UserStore {
 
     logout = () => {
         store.commonStore.setToken(null);
+        this.stopRefreshTokenTimer();
         this.user = null;
         history.push('/');
     }
@@ -48,6 +52,9 @@ export default class UserStore {
     getUser = async () => {
         try {
             const user = await agent.Account.current();
+            store.commonStore.setToken(user.token);
+            this.refreshTokenTimer(user);
+
             runInAction(() => {
                 this.user = user;
             })
@@ -60,6 +67,8 @@ export default class UserStore {
         try {
             const user = await agent.Account.register(creds);
             store.commonStore.setToken(user.token);
+            this.refreshTokenTimer(user);
+
 
             runInAction(() => {
                 this.user = user;
@@ -94,6 +103,8 @@ export default class UserStore {
             try {
                 const user = await agent.Account.fbLogin(accessToken);
                 store.commonStore.setToken(user.token);
+                this.refreshTokenTimer(user);
+
 
                 runInAction(() => {
                     this.user = user;
@@ -125,6 +136,7 @@ export default class UserStore {
         try {
             const user = await agent.Account.googleLogin(response.credential);
             store.commonStore.setToken(user.token);
+            this.refreshTokenTimer(user);
 
             runInAction(() => {
                 this.user = user;
@@ -140,6 +152,35 @@ export default class UserStore {
         }
 
     };
+
+    refreshToken = async () => {
+        this.stopRefreshTokenTimer();
+        try {
+            const user = await agent.Account.refreshToken();
+            store.commonStore.setToken(user.token);
+            this.refreshTokenTimer(user);
+
+            runInAction(() => {
+                this.user = user;
+            })
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    private refreshTokenTimer(user: User) {
+
+        const jwtToken = JSON.parse(atob(user.token.split('.')[1]));
+        const expires = new Date(jwtToken.exp * 1000);
+        const timeout = expires.getTime() - Date.now() - (50 * 1000);
+        this.refreshTokenTimeout = setTimeout(this.refreshToken, timeout);
+
+    }
+
+    stopRefreshTokenTimer = () => {
+        clearTimeout(this.refreshTokenTimeout);
+    }
 
 }
 

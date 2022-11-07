@@ -5,24 +5,25 @@ import { useStore } from '../../app/api/stores/store';
 import LoginForm from '../users/LoginForm';
 import RegisterForm from '../users/RegisterForm';
 
-declare var google: any;
-
 function HomePage() {
   const { userStore, modalStore, commonStore } = useStore();
 
   useEffect(() => {
 
     if (!commonStore.token) {
+      // @ts-ignore
       google.accounts.id.initialize({
         client_id: "657495905393-lb0lcqjjipnugcs75m708q3ee4nvf7bg.apps.googleusercontent.com",
         callback: userStore.googleLogin,
       });
 
+      // @ts-ignore
       google.accounts.id.renderButton(
         document.getElementById("buttonDiv"),
         { theme: "outline", size: "large" }  // customization attributes
       );
 
+      // @ts-ignore
       google.accounts.id.prompt((notification: any) => {
         if (notification.isNotDisplayed()) {
           console.log("Prompt was not displayed");

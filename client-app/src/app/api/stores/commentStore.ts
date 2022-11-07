@@ -23,17 +23,12 @@ export default class CommentStore {
 
             this.hubConnection
                 .start()
-                // .then(() => console.log(this.hubConnection!.state))
-                // .then(() => {
-                //     console.log('Attempting to join group');
-                //     this.hubConnection!.invoke('AddToGroup', activityId);
-                // })
+
                 .catch(error => console.log('Error establishing connection: ', error));
 
             this.hubConnection.on('ReceiveComment', (comment: ChatComment) => {
                 runInAction(() => {
                     comment.createdAt = new Date(comment.createdAt!);
-                    console.log('comment', comment);
                     this.comments.unshift(comment);
 
                 })

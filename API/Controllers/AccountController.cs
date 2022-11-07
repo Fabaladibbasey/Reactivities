@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
@@ -38,6 +37,7 @@ namespace API.Controllers
             // _httpClient.BaseAddress = new Uri(config["ExternalAuthUrl"]);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
@@ -48,12 +48,15 @@ namespace API.Controllers
 
             if (result.Succeeded)
             {
+                await SetRefreshTokenCookie(user);
+
                 return CreateUserObject(user);
             }
 
             return Unauthorized();
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
@@ -80,6 +83,8 @@ namespace API.Controllers
 
             if (result.Succeeded)
             {
+                await SetRefreshTokenCookie(user);
+
                 return CreateUserObject(user);
             }
 
@@ -92,9 +97,13 @@ namespace API.Controllers
         {
             var user = await _userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
             if (user == null) return NotFound();
+
+            await SetRefreshTokenCookie(user); // you not need to call this method here, because you already have a token in the cookie
+
             return CreateUserObject(user);
         }
 
+        [AllowAnonymous]
         [HttpPost("fbLogin")]
         public async Task<ActionResult<UserDto>> FacebookLogin(string accessToken)
         {
@@ -144,10 +153,13 @@ namespace API.Controllers
 
             }
 
+            await SetRefreshTokenCookie(user);
+
             return CreateUserObject(user);
         }
 
         //google login
+        [AllowAnonymous]
         [HttpPost("googleLogin")]
         public async Task<ActionResult<UserDto>> GoogleLogin(string accessToken)
         {
@@ -183,9 +195,40 @@ namespace API.Controllers
                 }
             }
 
+            await SetRefreshTokenCookie(user);
+            return CreateUserObject(user);
+        }
+
+        [Authorize]
+        [HttpPost("refreshToken")]
+        public async Task<ActionResult<UserDto>> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var user = await _userManager.Users
+            .Include(r => r.RefreshTokens)
+            .Include(p => p.Photos)
+            .FirstOrDefaultAsync(x => x.UserName == User.FindFirstValue(ClaimTypes.Name));
+            if (user == null) return Unauthorized();
+
+            var oldToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken);
+            if (oldToken != null && !oldToken.IsActive) return Unauthorized();
 
             return CreateUserObject(user);
         }
+
+        private async Task SetRefreshTokenCookie(AppUser user)
+        {
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            user.RefreshTokens.Add(refreshToken);
+            await _userManager.UpdateAsync(user);
+
+            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            });
+        }
+
 
         private UserDto CreateUserObject(AppUser user)
         {
