@@ -21,13 +21,6 @@ function App() {
   const location = useLocation();
   const { userStore, commonStore } = useStore();
 
-  // if (commonStore.token) {
-  //   if (!userStore.user) {
-  //     userStore.getUser().finally(() => commonStore.setAppLoaded());
-  //   }
-  // }
-
-
   useEffect(
     () => {
       if (commonStore.token) {
@@ -36,24 +29,6 @@ function App() {
         userStore.getFacebookLoginStatus().finally(() => commonStore.setAppLoaded());
 
       }
-      // window.onload = function () {
-      //   google.accounts.id.initialize({
-      //     client_id: "657495905393-lb0lcqjjipnugcs75m708q3ee4nvf7bg.apps.googleusercontent.com",
-      //     callback: userStore.googleLogin,
-      //   });
-
-      // google.accounts.id.prompt((notification: any) => {
-      //   if (notification.isNotDisplayed()) {
-      //     console.log("Prompt was not displayed");
-      //   } else if (notification.isSkippedMoment()) {
-      //     console.log("Prompt was skipped");
-      //   } else if (notification.isDismissedMoment()) {
-      //     console.log("Prompt was dismissed");
-      //   }
-      // });
-
-      // }
-
     }, [commonStore, userStore])
 
   if (!commonStore.appLoaded) return <LoadingComponent content='Loading app...' />

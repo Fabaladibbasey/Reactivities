@@ -151,7 +151,10 @@ namespace API.Controllers
         [HttpPost("googleLogin")]
         public async Task<ActionResult<UserDto>> GoogleLogin(string accessToken)
         {
-            var payload = await GoogleJsonWebSignature.ValidateAsync(accessToken, new GoogleJsonWebSignature.ValidationSettings());
+            var payload = await GoogleJsonWebSignature.ValidateAsync(accessToken, new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { _config["Google:ClientId"] }
+            });
             var user = await _userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == payload.Email);
 
             if (user == null)

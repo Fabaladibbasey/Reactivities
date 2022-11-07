@@ -11,28 +11,31 @@ function HomePage() {
   const { userStore, modalStore, commonStore } = useStore();
 
   useEffect(() => {
-    // window.onload = function () {
-    google.accounts.id.initialize({
-      client_id: "657495905393-lb0lcqjjipnugcs75m708q3ee4nvf7bg.apps.googleusercontent.com",
-      callback: userStore.googleLogin,
-    });
 
-    google.accounts.id.renderButton(
-      document.getElementById("buttonDiv"),
-      { theme: "outline", size: "large" }  // customization attributes
-    );
+    if (!commonStore.token) {
+      google.accounts.id.initialize({
+        client_id: "657495905393-lb0lcqjjipnugcs75m708q3ee4nvf7bg.apps.googleusercontent.com",
+        callback: userStore.googleLogin,
+      });
 
-    google.accounts.id.prompt((notification: any) => {
-      if (notification.isNotDisplayed()) {
-        console.log("Prompt was not displayed");
-      } else if (notification.isSkippedMoment()) {
-        console.log("Prompt was skipped");
-      } else if (notification.isDismissedMoment()) {
-        console.log("Prompt was dismissed");
-      }
-    });
+      google.accounts.id.renderButton(
+        document.getElementById("buttonDiv"),
+        { theme: "outline", size: "large" }  // customization attributes
+      );
 
-    // }
+      google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed()) {
+          console.log("Prompt was not displayed");
+        } else if (notification.isSkippedMoment()) {
+          console.log("Prompt was skipped");
+        } else if (notification.isDismissedMoment()) {
+          console.log("Prompt was dismissed");
+        }
+      });
+
+    }
+
+
   }, [commonStore.token, userStore])
 
 
