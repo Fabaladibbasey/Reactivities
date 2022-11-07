@@ -41,7 +41,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 //security headers
 app.UseXContentTypeOptions();
-app.UseReferrerPolicy(opt => opt.NoReferrer());
+app.UseReferrerPolicy(opt => opt.StrictOriginWhenCrossOrigin());
 app.UseXXssProtection(opt => opt.EnabledWithBlockMode());
 app.UseXfo(opt => opt.Deny());
 
@@ -51,7 +51,8 @@ app.UseCsp(opt => opt
     "sha256-lmto2U1o7YINyHPg9TOCjIt+o5pSFNU/T2oLxDPF+uw=",
     "sha256-DpOoqibK/BsYhobWHnU38Pyzt5SjDZuR/mFsAiVN7kk=",
     "https://accounts.google.com/",
-    "sha256-VdJLYZrBOhBJj2L4/+iZupDWpR1sppzSbgJzXdO/Oss="
+    "sha256-VdJLYZrBOhBJj2L4/+iZupDWpR1sppzSbgJzXdO/Oss=",
+    "sha256-e6v1SBY0/nWORF0cSCN2iKUc90hYDPlQUe8okJKLZcY="
     ))
     .FontSources(s => s.Self().CustomSources("https://fonts.gstatic.com", "https://cdn.jsdelivr.net", "data:"))
     .FormActions(s => s.Self())
