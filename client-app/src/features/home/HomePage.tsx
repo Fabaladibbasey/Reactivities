@@ -12,8 +12,6 @@ function HomePage() {
 
   useEffect(() => {
     // window.onload = function () {
-    console.log("window.onload");
-
     google.accounts.id.initialize({
       client_id: "657495905393-lb0lcqjjipnugcs75m708q3ee4nvf7bg.apps.googleusercontent.com",
       callback: userStore.googleLogin,

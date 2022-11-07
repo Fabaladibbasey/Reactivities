@@ -113,7 +113,9 @@ export default class UserStore {
             apiLogin(this.fbAccessToken);
         } else {
             window.FB.login((response) => {
-                apiLogin(response.authResponse.accessToken);
+                if (response != null && response.authResponse != null) {
+                    apiLogin(response.authResponse.accessToken);
+                }
             }, { scope: 'public_profile,email' })
         }
     }
@@ -122,8 +124,6 @@ export default class UserStore {
         this.googleLoading = true;
         try {
             const user = await agent.Account.googleLogin(response.credential);
-            console.log(user);
-
             store.commonStore.setToken(user.token);
 
             runInAction(() => {
