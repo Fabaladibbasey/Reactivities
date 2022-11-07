@@ -35,7 +35,8 @@ namespace Application.Core
             CreateMap<Comment, CommentDto>()
                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.Author.UserName))
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.Author.DisplayName))
-                .ForMember(d => d.Image, o => o.MapFrom(s => s.Author.Photos.FirstOrDefault(x => x.IsMain).Url));
+                .ForMember(d => d.Image, o => o.MapFrom(s => s.Author.Photos.FirstOrDefault(x => x.IsMain).Url))
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt));
 
             CreateMap<ActivityAttendee, Profiles.UserActivityDto>()
                 .ForMember(d => d.Id, o => o.MapFrom(s => s.Activity.Id))
