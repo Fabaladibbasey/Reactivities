@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Container, Divider, Header, Segment } from 'semantic-ui-react'
+import { Button, Container, Divider, Segment } from 'semantic-ui-react'
 import { useStore } from '../../app/api/stores/store';
 import LoginForm from '../users/LoginForm';
 import RegisterForm from '../users/RegisterForm';

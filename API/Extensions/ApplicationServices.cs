@@ -4,8 +4,6 @@ using Application.Interfaces;
 using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
 namespace API.Extensions
 {

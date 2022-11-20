@@ -1,4 +1,3 @@
-import jwtDecode from "jwt-decode";
 import { makeAutoObservable, runInAction } from "mobx";
 import { history } from "../../..";
 import { User, UserFormValues } from "../../models/user";

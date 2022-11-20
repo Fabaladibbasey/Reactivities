@@ -10,7 +10,7 @@ interface Props {
 }
 
 const MyTextAreaInput = ({ label, ...props }: Props) => {
-    const [field, meta, helpers] = useField(props);
+    const [field, meta] = useField(props);
     return (
         <Form.Field error={meta.touched && !!meta.error}>
             <label>

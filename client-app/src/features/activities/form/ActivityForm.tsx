@@ -18,11 +18,11 @@ import MyDateInput from '../../../app/common/form/MyDateInput';
 
 export default observer(function ActivityForm() {
     const { activityStore } = useStore();
-    const { isLoading, initialLoading, createActivity, updateActivity, loadActivity } = activityStore;
+    const { initialLoading, createActivity, updateActivity, loadActivity } = activityStore;
     const { id } = useParams<{ id: string }>();
     const history = useHistory();
 
-    const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues);
+    const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
 
     useEffect(() => {
         if (id) loadActivity(id)

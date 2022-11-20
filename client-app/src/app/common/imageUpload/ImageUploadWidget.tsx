@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Grid, Header } from 'semantic-ui-react'
-import { useStore } from '../../api/stores/store';
 import PhotoWidgetCropper from './PhotoWidgetCropper';
 import PhotoWidgetDropzone from './PhotoWidgetDropzone'
 

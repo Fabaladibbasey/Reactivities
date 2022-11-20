@@ -27,7 +27,7 @@ function ProfileEditForm({ profile, updateProfile }: Props) {
                 displayName: profile.displayName,
                 bio: profile.bio!
             })
-    }, [])
+    }, [profile])
 
     return (
         <Formik

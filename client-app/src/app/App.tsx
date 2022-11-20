@@ -16,7 +16,6 @@ import LoadingComponent from './layout/LoadingComponent';
 import ModalContainer from './common/modal/ModalContainer';
 import ProfilePage from '../features/profiles/ProfilePage';
 import PrivateRoute from './layout/PrivateRoute';
-declare var google: any;
 function App() {
   const location = useLocation();
   const { userStore, commonStore } = useStore();

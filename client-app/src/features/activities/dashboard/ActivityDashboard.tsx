@@ -3,8 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { Grid, Loader } from 'semantic-ui-react'
 import { useStore } from '../../../app/api/stores/store';
-import LoadingComponent from '../../../app/layout/LoadingComponent';
-
 import ActivityList from './ActivityList';
 import ActivityFilters from './ActivityFilters';
 import { pagingParams } from '../../../app/models/paginations';
@@ -25,7 +23,7 @@ export default observer(function ActivityDashboard() {
 
     useEffect(() => {
         loadActivities();
-    }, []);
+    }, [loadActivities]);
 
     return (
         <Grid>

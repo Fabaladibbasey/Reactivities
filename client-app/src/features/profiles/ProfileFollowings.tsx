@@ -16,7 +16,7 @@ function ProfileFollowings({ predicate }: Props) {
         return () => {
             clearFollowings()
         }
-    }, [profile, predicate])
+    }, [profile, predicate, loadFollowings, clearFollowings])
 
     return (
         <Tab.Pane loading={loading}>
