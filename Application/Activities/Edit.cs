@@ -37,16 +37,7 @@ namespace Application.Activities
             {
                 var dbActivity = await _context.Activities.FindAsync(request.Activity.Id);
 
-                //manually mapping to update the activity
-                // dbActiviy.Title = request.Activity.Title ?? dbActiviy.Title;
-                // dbActiviy.Description = request.Activity.Description ?? dbActiviy.Description;
-
-                //using Upated method in ef core
-                // _context.Activities.Update(request.Activity);
-
                 if (dbActivity == null) return null;
-
-                //using automapper
                 _mapper.Map(request.Activity, dbActivity);
 
                 var edited = await _context.SaveChangesAsync() > 0;

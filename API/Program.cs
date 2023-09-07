@@ -20,12 +20,6 @@ builder.Services.AddControllers(opt =>
 builder.AddApplicationServices();
 builder.AddIdentityServices();
 
-// var appContext = builder.Services.BuildServiceProvider().GetRequiredService<DataContext>();
-// var userManager = builder.Services.BuildServiceProvider().GetRequiredService<UserManager<AppUser>>();
-// await appContext.Database.MigrateAsync();
-// await Seed.SeedData(appContext, userManager);
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

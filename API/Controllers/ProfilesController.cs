@@ -19,18 +19,6 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(command));
         }
 
-        // [HttpPost("{username}/follow")]
-        // public async Task<IActionResult> Follow(string username)
-        // {
-        //     return HandleResult(await Mediator.Send(new FollowToggle.Command { Username = username }));
-        // }
-
-        // [HttpGet("{username}/activities")]
-        // public async Task<IActionResult> GetUserActivities(string username, string predicate)
-        // {
-        //     return HandleResult(await Mediator.Send(new ListActivities.Query { Username = username, Predicate = predicate }));
-        // }
-
         [HttpGet("{username}/activities")]
         public async Task<IActionResult> GetUserActivities(string username, string predicate, [FromQuery] PagingParams pagingParams)
         {

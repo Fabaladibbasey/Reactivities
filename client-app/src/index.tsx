@@ -1,36 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './app/index.css';
-import 'semantic-ui-css/semantic.min.css';
-import 'react-calendar/dist/Calendar.css';
-import 'react-toastify/dist/ReactToastify.css';
+import ReactDOM from "react-dom/client";
+import "./app/index.css";
+import "semantic-ui-css/semantic.min.css";
+import "react-calendar/dist/Calendar.css";
+import "react-toastify/dist/ReactToastify.css";
 import "react-datepicker/dist/react-datepicker.css";
-import App from './app/App';
-import reportWebVitals from './reportWebVitals';
-import { store, StoreContext } from './app/api/stores/store';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import ScrollToTop from './app/layout/ScrollToTop';
-
-export const history = createBrowserHistory();
+import { store, StoreContext } from "./app/api/stores/store";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./app/router/Routes";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
-  // <React.StrictMode>
-  <StoreContext.Provider value={store}>
-    <Router history={history}>
-      <ScrollToTop />
-      <App />
-    </Router>
-  </StoreContext.Provider>
-  // </React.StrictMode>
+  <>
+    <StoreContext.Provider value={store}>
+      <RouterProvider router={router} />
+    </StoreContext.Provider>
+  </>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
-
-

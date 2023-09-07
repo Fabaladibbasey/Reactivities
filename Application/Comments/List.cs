@@ -17,21 +17,6 @@ namespace Application.Comments
         public class Handler : IRequestHandler<Query, Result<List<CommentDto>>>
         {
 
-            // private readonly ICommentRepository _commentRepository;
-
-            // public Handler(ICommentRepository commentRepository)
-            // {
-            //     _commentRepository = commentRepository;
-            // }
-
-            // public async Task<Result<List<CommentDto>>> Handle(Query request, CancellationToken cancellationToken)
-            // {
-
-            //     var comments = await _commentRepository.GetCommentsForActivity(request.ActivityId);
-
-            //     return Result<List<CommentDto>>.Success(comments);
-            // }
-
             private readonly DataContext _context;
             private readonly IMapper _mapper;
 

@@ -1,8 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { history } from "../../..";
 import { User, UserFormValues } from "../../models/user";
 import agent from "../agent";
 import { store } from "./store";
+import { router } from "../../router/Routes";
 
 // declare var google: any;
 
@@ -34,7 +34,7 @@ export default class UserStore {
                 this.user = user;
             })
 
-            history.push('/activities');
+            router.navigate('/activities');
             store.modalStore.closeModal();
         } catch (error) {
             throw error;
@@ -45,7 +45,7 @@ export default class UserStore {
         store.commonStore.setToken(null);
         this.stopRefreshTokenTimer();
         this.user = null;
-        history.push('/');
+        router.navigate('/');
     }
 
     getUser = async () => {
@@ -73,7 +73,7 @@ export default class UserStore {
                 this.user = user;
             })
 
-            history.push('/activities');
+            router.navigate('/activities');
             store.modalStore.closeModal();
         } catch (error) {
             throw error;
@@ -109,7 +109,7 @@ export default class UserStore {
                     this.user = user;
                 })
 
-                history.push('/activities');
+                router.navigate('/activities');
                 store.modalStore.closeModal();
 
             } catch (error) {
@@ -141,7 +141,7 @@ export default class UserStore {
                 this.user = user;
             })
 
-            history.push('/activities');
+            router.navigate('/activities');
             store.modalStore.closeModal();
 
         } catch (error) {

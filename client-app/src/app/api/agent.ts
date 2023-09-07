@@ -1,16 +1,16 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { history } from "../..";
 import { Activity, ActivityFormValues } from "../models/activity";
 import { PaginatedResult } from "../models/paginations";
 import { Photo, Profile, UserActivity } from "../models/profile";
 import { User, UserFormValues } from "../models/user";
 import { store } from "./stores/store";
+import { router } from "../router/Routes";
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 const sleep = (delay: number) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve: any) => {
         setTimeout(resolve, delay);
     });
 };
@@ -18,17 +18,17 @@ const sleep = (delay: number) => {
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 axios.interceptors.request.use(async config => {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
         await sleep(1000);
     }
     const token = store.commonStore.token;
-    if (token) config.headers!.Authorization = `Bearer ${token}`;
+    if (token && config.headers) config.headers.Authorization = `Bearer ${token}`;
     return config;
 });
 
 
 axios.interceptors.response.use(async response => {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
         await sleep(1000);
     }
     const pagination = response.headers["pagination"];
@@ -40,14 +40,14 @@ axios.interceptors.response.use(async response => {
 }, (error: AxiosError<any, any>) => {
     console.log('inter error', error);
 
-    const { data, status, config, headers } = error.response!;
+    const { data, status, config, headers } = error.response as AxiosResponse;
     switch (status) {
         case 400:
             if (typeof data === 'string') {
                 toast.error(data);
             }
             if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
-                history.push('/not-found');
+                router.navigate('/not-found');
             }
 
             if (data.errors) {
@@ -69,11 +69,11 @@ axios.interceptors.response.use(async response => {
             }
             break;
         case 404:
-            history.push('/not-found');
+            router.navigate('/not-found');
             break;
         case 500:
             store.commonStore.setServerError(data);
-            history.push('/server-error');
+            router.navigate('/server-error');
             break;
     }
 

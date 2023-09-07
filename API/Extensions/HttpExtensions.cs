@@ -18,7 +18,6 @@ namespace API.Extensions
             // camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             response.Headers.Add("Pagination", JsonSerializer.Serialize(paginationHeader));
-            // response.Headers.Add("Access-Control-Expose-Headers", "Pagination");  // we gonna add this in the application service
         }
     }
 }

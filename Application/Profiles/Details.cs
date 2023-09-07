@@ -30,16 +30,6 @@ namespace Application.Profiles
 
             public async Task<Result<Profile>> Handle(Query request, CancellationToken cancellationToken)
             {
-                // var user = await _profileReader.Users
-                //     .Include(p => p.Photos)
-                //     .FirstOrDefaultAsync(x => x.UserName == request.Username);
-
-                // if (user == null) return null;
-
-                // var profile = _mapper.Map<AppUser, Profile>(user);
-
-                // return Result<Profile>.Success(profile);
-
                 var user = await _profileReader.Users
                     .ProjectTo<Profile>(_mapper.ConfigurationProvider, new { currentUserName = _userAccessor.GetUserName() })
                     .FirstOrDefaultAsync(x => x.UserName == request.UserName);

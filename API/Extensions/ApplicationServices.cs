@@ -52,10 +52,6 @@ namespace API.Extensions
                 options.UseNpgsql(connStr);
             });
 
-            // builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-            //     .AddEntityFrameworkStores<DataContext>()
-            //     .AddDefaultTokenProviders();
-
             builder.Services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
